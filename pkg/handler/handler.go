@@ -22,5 +22,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		api.GET("/get-url", h.getUrl)
 	}
 
+	redirector := router.Group("/go")
+	{
+		redirector.GET(":code", h.redirectLink)
+	}
+
 	return router
 }

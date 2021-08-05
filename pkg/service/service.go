@@ -7,8 +7,8 @@ import (
 
 type Link interface {
 	CropLink(link string) (string, error)
-	GenerateCode() (string, error)
 	GetLink(url string) (model.Link, error)
+	RedirectLink(code string) (string, error)
 }
 
 type Service struct {

@@ -8,6 +8,8 @@ import (
 type Link interface {
 	CropLink(link string) (string, error)
 	GetLink(link string) (model.Link, error)
+	GenerateCode() string
+	RedirectLink(code string) (string, error)
 }
 
 type Repository struct {
@@ -16,6 +18,6 @@ type Repository struct {
 
 func NewRepository(db *sqlx.DB) *Repository {
 	return &Repository{
-		Link: NewLinkPostgres(db),
+		Link: NewLinkMysql(db),
 	}
 }

@@ -1,0 +1,10 @@
+database:
+  host: localhost
+  port: 3306
+  database: url_crop_db
+  user: root
+  password:
+
+server:
+  port: 2021
+  domain: localhost

@@ -15,12 +15,11 @@ type Config struct {
 	Username string
 	Password string
 	Db       string
-	SslMode  string
 }
 
-func NewPostgresDb(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", fmt.Sprintf(`host=%s port=%s user=%s dbname=%s password=%s sslmode=%s`,
-		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.Db, cfg.SslMode))
+func NewMysqlDb(cfg Config) (*sqlx.DB, error) {
+	db, err := sqlx.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Db))
 	if err != nil {
 		return nil, err
 	}

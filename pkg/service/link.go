@@ -17,10 +17,6 @@ func (s *LinkService) CropLink(link string) (string, error) {
 	return s.repo.CropLink(link)
 }
 
-func (s *LinkService) GenerateCode() (string, error) {
-	return "test", nil
-}
-
 func (s *LinkService) GetLink(url string) (model.Link, error) {
 	link, err := s.repo.GetLink(url)
 	if err != nil {
@@ -28,4 +24,8 @@ func (s *LinkService) GetLink(url string) (model.Link, error) {
 	}
 
 	return link, nil
+}
+
+func (s *LinkService) RedirectLink(code string) (string, error) {
+	return s.repo.RedirectLink(code)
 }

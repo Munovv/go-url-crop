@@ -6,7 +6,9 @@ import (
 	"github.com/Munovv/go-url-crop/pkg/repository"
 	"github.com/Munovv/go-url-crop/pkg/server"
 	"github.com/Munovv/go-url-crop/pkg/service"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/signal"
@@ -15,13 +17,16 @@ import (
 )
 
 func main() {
-	db, err := repository.NewPostgresDb(repository.Config{
-		Host:     "localhost",
-		Port:     "8000",
-		Username: "root",
-		Password: "",
-		Db:       "job_database",
-		SslMode:  "disable",
+	if err := initConfig(); err != nil {
+		logrus.Fatalf("error init config: %s", err.Error())
+	}
+
+	db, err := repository.NewMysqlDb(repository.Config{
+		Host:     viper.GetString("database.host"),
+		Port:     viper.GetString("database.port"),
+		Username: viper.GetString("database.user"),
+		Password: viper.GetString("database.password"),
+		Db:       viper.GetString("database.database"),
 	})
 	if err != nil {
 		logrus.Fatalf("failed initialize database: %s", err.Error())
@@ -37,7 +42,7 @@ func main() {
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
 	go func() {
-		if err := srv.Run("5000", handlers.InitRoutes()); err != nil {
+		if err := srv.Run(viper.GetString("server.port"), handlers.InitRoutes()); err != nil {
 			log.Fatalf("error occured while running http server: %s", err.Error())
 		}
 	}()
@@ -55,4 +60,11 @@ func main() {
 		log.Fatalf("error occured on server shutdown: %s", err.Error())
 	}
 	log.Print("Server exited properly")
+}
+
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("main")
+
+	return viper.ReadInConfig()
 }
